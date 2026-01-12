@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 
 public class MapGenerator : MonoBehaviour
 {
@@ -216,8 +217,8 @@ public class MapGenerator : MonoBehaviour
     void BuildRoom(int startX, int startY)
     {
         // Random size for the room
-        int roomWidth = Random.Range(4, 12);
-        int roomHeight = Random.Range(4, 12);
+        int roomWidth = Random.Range(7, 10);
+        int roomHeight = Random.Range(7, 10);
 
         int roomTileCount = 0; // number of tiles added for this room
 
@@ -299,5 +300,39 @@ public class MapGenerator : MonoBehaviour
         ConnectRoomsMST();
 
         Debug.Log($"Generated {existingRooms.Count} rooms covering {coveredTiles} tiles ({(coveredTiles * 100f / totalTiles):F1}% coverage).");
+
+        foreach (Transform tileTransform in gridTransform)
+        {
+            GameObject tileObj = tileTransform.gameObject;
+            Tile tile = tileObj.GetComponent<Tile>();
+
+            if (tile == null || !tile.Walkable)
+                continue;
+
+            GameObject[] cardinals = GridUtil.GetCardinals(tile.xCordinate, tile.yCordinate);
+            string[] directions = { "North", "East", "South", "West" };
+
+            for (int i = 0; i < cardinals.Length; i++)
+            {
+                GameObject neighbor = cardinals[i];
+                if (neighbor == null) continue;
+
+                Tile neighborTile = neighbor.GetComponent<Tile>();
+                if (neighborTile == null) continue;
+
+                if (!neighborTile.Walkable && !neighborTile.BuiltOn)
+                {
+                    Transform wallTransform = tileTransform.Find(directions[i]);
+                    if (wallTransform == null) continue;
+
+                    SpriteRenderer srWall = wallTransform.GetComponent<SpriteRenderer>();
+                    if (srWall != null)
+                    {
+                        srWall.color = Color.gray;
+                    }
+                }
+            }
+        }
+
     }
 }
