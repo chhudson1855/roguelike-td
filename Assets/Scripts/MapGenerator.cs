@@ -12,6 +12,8 @@ public class MapGenerator : MonoBehaviour
     public float originX = -8.6f;
     public float originY = -10.55f;
 
+    public float piles;
+
 
     private int totalTiles => width * height;
     private int coveredTiles = 0; // count of walkable tiles
@@ -20,6 +22,7 @@ public class MapGenerator : MonoBehaviour
 
     [SerializeField] private GameObject tilePrefab;
     [SerializeField] private Transform gridTransform;
+    [SerializeField] private Transform buildingsTransform;
 
     void Start()
     {
@@ -277,6 +280,37 @@ public class MapGenerator : MonoBehaviour
         coveredTiles += roomTileCount;
     }
 
+    void BuildObjects()
+    {
+        // Placeholder for future object placement logic
+
+        for (int i = 0; i < piles; i++)
+        {
+            int random = Random.Range(0, existingRooms.Count);
+            RectInt room = existingRooms[random];
+
+            int x = Random.Range(room.x + 1, room.x + room.width - 1);   // avoid left/right edge
+            int y = Random.Range(room.y + 1, room.y + room.height - 1);  // avoid top/bottom edge
+
+            GameObject tileObj = GridUtil.GetObject(x, y);
+            if (tileObj == null) continue;
+
+            Tile tile = tileObj.GetComponent<Tile>();
+
+            if (!tile.BuiltOn && tile.Walkable)
+            {
+                GameObject gold = Instantiate(Resources.Load<GameObject>("Prefabs/gold_pile_0"), buildingsTransform);
+                tile.occupiedBy.Add(gold);
+
+                gold.transform.localPosition = new Vector3(
+                    originX + (x * spacing),
+                    originY + (y * spacing),
+                    0f
+                );
+            }
+        }
+    }
+
 
     void GenerateMap()
     {
@@ -295,6 +329,8 @@ public class MapGenerator : MonoBehaviour
 
             BuildRoom(startX, startY);
         }
+
+        BuildObjects();
 
         // Connect all rooms after they are generated
         ConnectRoomsMST();
