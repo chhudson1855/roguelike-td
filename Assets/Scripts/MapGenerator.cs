@@ -19,8 +19,8 @@ public class MapGenerator : MonoBehaviour
     private int coveredTiles = 0; // count of walkable tiles
     private int targetCoverage = 200;
 
+    public GameObject portal;
 
-    [SerializeField] private GameObject tilePrefab;
     [SerializeField] private Transform gridTransform;
     [SerializeField] private Transform buildingsTransform;
 
@@ -37,7 +37,7 @@ public class MapGenerator : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                GameObject tile = Instantiate(tilePrefab, gridTransform);
+                GameObject tile = Instantiate(Resources.Load<GameObject>("Prefabs/tile"), gridTransform);
 
                 tile.transform.localPosition = new Vector3(
                     originX + (x * spacing),
@@ -78,6 +78,8 @@ public class MapGenerator : MonoBehaviour
                     srEntrance.color = new Color(0.6f, 0.3f, 0f);
                 }
                 doors--;
+
+                tile.BuiltOn = true;
             }
             else
             {
@@ -280,6 +282,40 @@ public class MapGenerator : MonoBehaviour
         coveredTiles += roomTileCount;
     }
 
+    void MakePortal()
+    {
+        int random = Random.Range(0, existingRooms.Count);
+        RectInt room = existingRooms[random];
+
+        int x = Random.Range(room.x + 1, room.x + room.width - 1);   // avoid left/right edge
+        int y = Random.Range(room.y + 1, room.y + room.height - 1);  // avoid top/bottom edge
+
+        GameObject tileObj = GridUtil.GetObject(x, y);
+        if (tileObj == null) MakePortal();
+
+        Tile tile = tileObj.GetComponent<Tile>();
+
+        if (!tile.BuiltOn && tile.Walkable)
+        {
+            GameObject portalsr = Instantiate(Resources.Load<GameObject>("Prefabs/portal"), buildingsTransform);
+            tile.occupiedBy.Add(portalsr);
+
+            portalsr.transform.localPosition = new Vector3(
+                originX + (x * spacing),
+                originY + (y * spacing),
+                0f
+            );
+
+            portal = portalsr;
+
+            tile.BuiltOn = true;
+        }
+        else
+        {
+            MakePortal();
+        }
+    }
+
     void BuildObjects()
     {
         // Placeholder for future object placement logic
@@ -307,8 +343,15 @@ public class MapGenerator : MonoBehaviour
                     originY + (y * spacing),
                     0f
                 );
+
+                Gold goldScript = gold.GetComponent<Gold>();
+                goldScript.Init(tile.xCordinate, tile.yCordinate);
+
+                tile.BuiltOn = true;
             }
         }
+
+        MakePortal();
     }
 
 
@@ -330,10 +373,10 @@ public class MapGenerator : MonoBehaviour
             BuildRoom(startX, startY);
         }
 
-        BuildObjects();
-
         // Connect all rooms after they are generated
         ConnectRoomsMST();
+
+        BuildObjects();
 
         Debug.Log($"Generated {existingRooms.Count} rooms covering {coveredTiles} tiles ({(coveredTiles * 100f / totalTiles):F1}% coverage).");
 
