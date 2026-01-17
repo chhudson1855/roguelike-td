@@ -55,10 +55,10 @@ public static class GridUtil
         {
             return new GameObject[]
             {
-                GridUtil.GetObject(x, y+1), //N
-                GridUtil.GetObject(x+1, y), //E
-                GridUtil.GetObject(x, y-1), //S
-                GridUtil.GetObject(x-1, y)  //W
+                GridUtil.GetObject(x, y+1),
+                GridUtil.GetObject(x+1, y),
+                GridUtil.GetObject(x, y-1),
+                GridUtil.GetObject(x-1, y)
             };
         }
     }
