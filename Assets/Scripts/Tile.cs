@@ -67,7 +67,7 @@ public class Tile : MonoBehaviour
         while (elapsed < hTime)
         {
             
-            elapsed += Time.DeltaTime; 
+            elapsed += Time.deltaTime; 
             
             float percent = elapsed / hTime;
             transform.position = Vector2.Lerp(startPos, endPos, percent);
