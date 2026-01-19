@@ -18,11 +18,58 @@ public class Cursor : MonoBehaviour
     [SerializeField] private float maxVelo = 0.05f;
     
     //how much time is shaven off per step (acceleration)
-    [SerializeField] private float accerlation = 0.02f;
+    [SerializeField] private float acceleration = 0.02f;
     private bool isMoving = false;
     private float currentHTime;
+    
+    //spawning 
+    public GameObject unit1Prefab; // slime
+    public GameObject unit2Prefab; // knight
+    public GameObject unit3Prefab; //archer
+    //keeps track of selected troop
+    private GameObject selectedPrefab;
+    
+
     private void Update()
     {
+        //selecting troop
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            selectedPrefab = unit1Prefab;
+            Debug.Log("Selected slime");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selectedPrefab = unit2Prefab;
+            Debug.Log("Selected knight");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            selectedPrefab = unit3Prefab;
+            Debug.Log("Selected archer");
+        }
+
+        //enter to build the selected troop
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            if (selectedPrefab != null)
+            {
+                // Create the unit
+                GameObject newUnit = Instantiate(selectedPrefab, transform.position, Quaternion.identity);
+                
+                //spawns on top layers
+                SpriteRenderer sr = newUnit.GetComponent<SpriteRenderer>();
+                if (sr != null) 
+                {
+                    sr.sortingOrder = 10;
+                }
+            }
+            else
+            {
+                Debug.Log("No unit selected! Press 1, 2, 3, or 4 first.");
+            }
+        }
+        //movement
         if (!Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow) && 
             !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow))
         {
@@ -31,7 +78,7 @@ public class Cursor : MonoBehaviour
         // If already moving, don't accept input
         if (isMoving) return;
 
-        //movement
+        //all diff  type of movement
        if (Input.GetKey(KeyCode.UpArrow))
         {
             StartCoroutine(Move(Vector2.up));
@@ -73,7 +120,7 @@ public class Cursor : MonoBehaviour
         //snap to final pos
         transform.position = endPos;
         //accel logic
-        currentHTime = Mathf.Max(currentHTime - accerlation, maxVelo);
+        currentHTime = Mathf.Max(currentHTime - acceleration, maxVelo);
         isMoving = false;
     }
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class Adventurer : MonoBehaviour
 {
     
+    public int health =5; 
     public float gridSize = 0.4f;
     public int movesPerTurn = 4;
     public float moveSpeed = 0.15f;
@@ -18,6 +19,12 @@ public class Adventurer : MonoBehaviour
     
     private void Update()
     {
+        if (health <= 0)
+        {
+            Debug.Log("Adventurer died");
+            Destroy(this.gameObject);
+            return;
+        }
         if (Input.GetKeyDown(KeyCode.Space))
         {
             Turn();
