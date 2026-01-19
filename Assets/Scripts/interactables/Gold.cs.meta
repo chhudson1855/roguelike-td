@@ -1,8 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: e0eee1ce468a1c54aaefd06600d57316
-=======
-guid: e0eee1ce468a1c54aaefd06600d57316
+guid: 49001a7d6f9193e4b95ef3f31d250b12
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -12,4 +9,3 @@ MonoImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
->>>>>>> parent of 0c700e9 (Revert "Version Match")
