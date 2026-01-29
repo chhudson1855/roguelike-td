@@ -1,5 +1,6 @@
 
 using System.Collections;
+using UnityEditor.Scripting;
 using UnityEngine;
 
 public class Cursor : MonoBehaviour
@@ -25,50 +26,57 @@ public class Cursor : MonoBehaviour
     //spawning 
     public GameObject unit1Prefab; // slime
     public GameObject unit2Prefab; // knight
-    public GameObject unit3Prefab; //archer
+    public GameObject unit3Prefab; // archer
     //keeps track of selected troop
-    private GameObject selectedPrefab;
-    
+
+    public void BuildEntity(GameObject prefab)
+    {
+        if (GameManager.instance.Mana >= GameManager.instance.prefabCostMap[prefab.name].cost)
+        {
+            GameManager.instance.Mana -= GameManager.instance.prefabCostMap[prefab.name].cost;
+
+            GameObject newUnit = Instantiate(prefab, transform.position, Quaternion.identity);
+               
+            newUnit.transform.parent = GameManager.instance.Entities.transform;
+            //spawns on top layers
+            SpriteRenderer sr = newUnit.GetComponent<SpriteRenderer>();
+            if (sr != null) 
+            {
+                sr.sortingOrder = 10;
+            }
+
+            newUnit.GetComponent<Entity>().Init(xCordinate, yCordinate);
+        }
+        else
+        {
+            Debug.Log("Not enough mana to build " + prefab.name);
+        }
+    }
 
     private void Update()
     {
-        //selecting troop
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (GameManager.instance.turn == true)
         {
-            selectedPrefab = unit1Prefab;
-            Debug.Log("Selected slime");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            selectedPrefab = unit2Prefab;
-            Debug.Log("Selected knight");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            selectedPrefab = unit3Prefab;
-            Debug.Log("Selected archer");
-        }
 
-        //enter to build the selected troop
-        if (Input.GetKeyDown(KeyCode.Return))
-        {
-            if (selectedPrefab != null)
+            Transform select = GameManager.instance.UI.transform.Find("Menu").Find("Select");
+
+            if (select.gameObject.activeSelf == true)
             {
-                // Create the unit
-                GameObject newUnit = Instantiate(selectedPrefab, transform.position, Quaternion.identity);
-                
-                //spawns on top layers
-                SpriteRenderer sr = newUnit.GetComponent<SpriteRenderer>();
-                if (sr != null) 
+                if (Input.GetKeyDown(KeyCode.Z))
                 {
-                    sr.sortingOrder = 10;
+                    BuildEntity(unit1Prefab);
+                }
+                else if (Input.GetKeyDown(KeyCode.X))
+                {
+                    BuildEntity(unit2Prefab);
+                }
+                else if (Input.GetKeyDown(KeyCode.C))
+                {
+                    BuildEntity(unit3Prefab);
                 }
             }
-            else
-            {
-                Debug.Log("No unit selected! Press 1, 2, 3, or 4 first.");
-            }
         }
+
         //movement
         if (!Input.GetKey(KeyCode.UpArrow) && !Input.GetKey(KeyCode.DownArrow) && 
             !Input.GetKey(KeyCode.LeftArrow) && !Input.GetKey(KeyCode.RightArrow))
@@ -81,19 +89,35 @@ public class Cursor : MonoBehaviour
         //all diff  type of movement
        if (Input.GetKey(KeyCode.UpArrow))
         {
-            StartCoroutine(Move(Vector2.up));
+            if (!(yCordinate > 23))
+            {
+                yCordinate += 1;
+                StartCoroutine(Move(Vector2.up));
+            }
         }
         else if (Input.GetKey(KeyCode.DownArrow))
         {
-            StartCoroutine(Move(Vector2.down));
+            if (!(yCordinate < 1))
+            {
+                yCordinate -= 1;
+                StartCoroutine(Move(Vector2.down));
+            }
         }
         else if (Input.GetKey(KeyCode.LeftArrow))
         {
-            StartCoroutine(Move(Vector2.left));
+            if (!(xCordinate < 1))
+            {
+                xCordinate -= 1;
+                StartCoroutine(Move(Vector2.left));
+            }
         }
         else if (Input.GetKey(KeyCode.RightArrow))
         {
-            StartCoroutine(Move(Vector2.right));
+            if (!(xCordinate > 44))
+            {
+                xCordinate += 1;
+                StartCoroutine(Move(Vector2.right));
+            }
         }
     }
 

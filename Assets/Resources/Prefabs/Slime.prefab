@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7938994843190774138}
   - component: {fileID: 5075641886282354151}
   - component: {fileID: 6853607301220676999}
+  - component: {fileID: -4317707230367181916}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Untagged
@@ -151,3 +152,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43607916e507b54459c7c18c8f0d4de4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Slime
+--- !u!114 &-4317707230367181916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 917054015526824634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af70b4888b6135b459692a13a93e7e55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entity
+  xCordinate: 0
+  yCordinate: 0

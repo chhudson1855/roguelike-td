@@ -7,7 +7,7 @@ public class Slime : MonoBehaviour
         
         if (collision.TryGetComponent<Adventurer>(out Adventurer adventurer))
         {
-            adventurer.health -= 1;
+            adventurer.myhealth -= 34;
             Destroy(this.gameObject);
         }
     }

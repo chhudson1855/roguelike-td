@@ -55,8 +55,8 @@ public class MapGenerator : MonoBehaviour
         }
     }
 
-    private List<RectInt> existingRooms = new List<RectInt>();
-    private List<Vector2Int> roomCenters = new List<Vector2Int>();
+    public List<RectInt> existingRooms = new List<RectInt>();
+    public List<Vector2Int> roomCenters = new List<Vector2Int>();
 
 
     void CarveTile(int x, int y, ref int doors)
@@ -309,6 +309,20 @@ public class MapGenerator : MonoBehaviour
             portal = portalsr;
 
             tile.BuiltOn = true;
+
+            portal.GetComponent<Entity>().Init(x,y);
+
+
+            GameObject adventurer = Instantiate(Resources.Load<GameObject>("Prefabs/Adventurer"), GameManager.instance.Entities.transform);
+
+            adventurer.transform.localPosition = new Vector3(
+                originX + (x * spacing),
+                originY + (y * spacing),
+                0f
+            );
+
+            adventurer.GetComponent<Adventurer>().Init(x, y);
+            adventurer.name = "Adventurer";
         }
         else
         {
@@ -319,7 +333,7 @@ public class MapGenerator : MonoBehaviour
     void BuildObjects()
     {
         // Placeholder for future object placement logic
-
+        
         for (int i = 0; i < piles; i++)
         {
             int random = Random.Range(0, existingRooms.Count);
@@ -343,6 +357,8 @@ public class MapGenerator : MonoBehaviour
                     originY + (y * spacing),
                     0f
                 );
+
+                gold.name = "Gold";
 
                 Gold goldScript = gold.GetComponent<Gold>();
                 goldScript.Init(tile.xCordinate, tile.yCordinate);

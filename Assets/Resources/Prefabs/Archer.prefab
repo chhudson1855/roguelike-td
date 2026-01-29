@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 134265602609867128}
   - component: {fileID: 2102524816516826958}
   - component: {fileID: -7476141476116565391}
+  - component: {fileID: -584962610302822397}
   m_Layer: 0
   m_Name: Archer
   m_TagString: Untagged
@@ -151,3 +152,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37777de9dee6f4148a5d1c75381f6483, type: 3}
   m_Name: 
   m_EditorClassIdentifier: '::'
+  health: 3
+  maxRangeTiles: 4
+  minRangeTiles: 1
+  gridSize: 0.4
+  arrowPrefab: {fileID: 1726912382999321592, guid: fe174ec20662b9747a844ddc833ed2fd, type: 3}
+--- !u!114 &-584962610302822397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4747389647457156109}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af70b4888b6135b459692a13a93e7e55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entity
+  xCordinate: 0
+  yCordinate: 0
